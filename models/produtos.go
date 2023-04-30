@@ -1,7 +1,7 @@
 package models
 
 import (
-	"std/codes/aplicacaoweb/db"
+	"codes/aula-ALURAgo/db"
 )
 
 type Produto struct {
@@ -13,7 +13,7 @@ type Produto struct {
 }
 
 func BuscaTodosOsProdutos() []Produto {
-	db := db.ConectaComBancoDeDadosConectaComBancoDeDados()
+	db := db.ConectaComBancoDeDados()
 	selectDeTodosOsProdutos, err := db.Query("select * from produtos")
 	if err != nil {
 		panic(err.Error())
@@ -38,4 +38,13 @@ func BuscaTodosOsProdutos() []Produto {
 	}
 	defer db.Close()
 	return produtos
+}
+func CriarNovoProduto(nome, descricao string, preco float64, quantidade int) {
+	db := db.ConectaComBancoDeDados()
+	insereDadosNoBanco, err := db.Prepare("insert into produtos(nome , descricao, preco, quantidade) values($1, $2, $3, $4)")
+	if err != nil {
+		panic(err.Error())
+	}
+	insereDadosNoBanco.Exec(nome, descricao, preco, quantidade)
+	defer db.Close()
 }
